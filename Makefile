@@ -8,7 +8,7 @@ help:
 
 .PHONY: app
 app:
-	sudo docker-compose -f ./docker-compose-app.yml up -d --build
+	sudo docker-compose -f ./dev/docker/docker-compose-app.yml up -d --build
 
 
 .PHONY: nt
