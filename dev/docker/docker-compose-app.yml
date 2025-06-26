@@ -7,6 +7,7 @@ services:
       dockerfile: ./dev/docker/Dockerfile
     ports:
       - "50051:50051"
+      - "6060:6060"
     env_file:
       - "./.env"
     restart: unless-stopped

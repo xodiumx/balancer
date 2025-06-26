@@ -2,18 +2,18 @@ package main
 
 import (
 	"balancer/src/core/config"
+	"balancer/src/core/handler"
 	"balancer/src/core/logger"
-	"go.uber.org/zap"
-	"log"
-	"net"
-
+	pb "balancer/src/proto"
 	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpczap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-
-	"balancer/src/core/handler"
-	pb "balancer/src/proto"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"log"
+	"net"
+	"net/http"
+	_ "net/http/pprof"
 )
 
 func main() {
@@ -21,7 +21,7 @@ func main() {
 	// Init cfg
 	cfg := config.Load()
 
-	//Init logger
+	//Init logger (RPS decrease 3-4 times)
 	if err := logger.InitLogger(); err != nil {
 		log.Fatalf("Init logger error: %v", err)
 	}
@@ -54,6 +54,14 @@ func main() {
 	// Use local requests
 	if cfg.DEBUG {
 		reflection.Register(s)
+
+		// Profiler (RPS decrease 30 %)
+		go func() {
+			logger.Log.Info("📈 Starting pprof on :6060")
+			if err := http.ListenAndServe(":6060", nil); err != nil {
+				log.Fatalf("pprof server failed: %v", err)
+			}
+		}()
 	}
 
 	logger.Log.Info("🚀 gRPC server started", zap.String("addr", ":50051"))
