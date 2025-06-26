@@ -30,8 +30,9 @@ make app
 - Start logs:
 
 ```Text
-2025-06-26 18:28:39 balancer-1  | 2025/06/26 15:28:39 [config] CDN_HOST=cdn.host.original.lol.322 DEBUG=true FREQUENCY=10
-2025-06-26 18:28:39 balancer-1  | 2025-06-26T15:28:39.588Z      INFO    cmd/server.go:59        🚀 gRPC server started       {"addr": ":50051"}
+2025-06-26 23:09:40 balancer-1  | 2025/06/26 20:09:40 [config] CDN_HOST=cdn.host.original.lol.322 DEBUG=true FREQUENCY=10
+2025-06-26 23:09:40 balancer-1  | 2025-06-26T20:09:40.848Z      INFO    server/server.go:60     🚀 gRPC server started       {"addr": ":50051"}
+2025-06-26 23:09:40 gateway     | 2025/06/26 20:09:40 🌐 Gateway started on :8080
 ```
 
 ## Use cases
