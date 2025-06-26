@@ -5,6 +5,8 @@
 - Example of balancing service
 - when sending a request to grpc-server (balancer) every 10 requests sends redirect url of original server,
   otherwise CDN url is sent depending on zone `s1,s2,s3,n`.
+- different subdomains s1,s2,s3,etc. are cached
+  and redirect to the original url comes for each 10 requests each one separately
 - 2 containers, a balancer and a gateway for direct request are configured in the service
 
 ## Install
