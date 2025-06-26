@@ -51,8 +51,10 @@ func main() {
 	// Register handler
 	pb.RegisterVideoBalancerServer(s, handler.NewHandler(cfg.CDNHost))
 
-	// TODO debug
-	reflection.Register(s)
+	// Use local requests
+	if cfg.DEBUG {
+		reflection.Register(s)
+	}
 
 	logger.Log.Info("🚀 gRPC server started", zap.String("addr", ":50051"))
 

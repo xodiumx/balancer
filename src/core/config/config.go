@@ -8,20 +8,24 @@ import (
 )
 
 type Config struct {
-	CDNHost string
+	DEBUG      bool
+	CDNHost    string
+	ServerBind string
 }
 
 func Load() *Config {
-	viper.SetEnvPrefix("app")
+
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
 
 	viper.SetDefault("cdn_host", "cdn.example.com")
 
 	cfg := &Config{
-		CDNHost: viper.GetString("cdn_host"),
+		DEBUG:      viper.GetBool("debug"),
+		ServerBind: viper.GetString("server_bind"),
+		CDNHost:    viper.GetString("cdn_host"),
 	}
 
-	log.Printf("[config] CDN_HOST=%s", cfg.CDNHost) // TODO : upd to zap
+	log.Printf("[config] CDN_HOST=%s DEBUG=%v", cfg.CDNHost, cfg.DEBUG)
 	return cfg
 }
