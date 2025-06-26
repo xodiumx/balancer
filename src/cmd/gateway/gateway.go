@@ -4,7 +4,6 @@ import (
 	pb "balancer/src/proto"
 	"context"
 	"encoding/json"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"io"
 	"log"
@@ -13,7 +12,8 @@ import (
 )
 
 func main() {
-	mux := runtime.NewServeMux()
+
+	// TODO: logs, config
 
 	customMux := http.NewServeMux()
 
@@ -23,7 +23,7 @@ func main() {
 			return
 		}
 
-		// читаем тело запроса
+		// Read request body
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, "invalid body", http.StatusBadRequest)
@@ -44,7 +44,7 @@ func main() {
 		}
 
 		// gRPC Client
-		conn, err := grpc.Dial("balancer:50051", grpc.WithInsecure())
+		conn, err := grpc.Dial("balancer:50051", grpc.WithInsecure()) // TODO: config for target url
 		if err != nil {
 			http.Error(w, "grpc dial error", http.StatusInternalServerError)
 			return
@@ -70,11 +70,8 @@ func main() {
 		http.Redirect(w, r, resp.RedirectUrl, http.StatusFound)
 	})
 
-	// fallback for other routes gRPC-Gateway
-	customMux.Handle("/", mux)
-
 	log.Println("🌐 Gateway started on :8080")
-	err := http.ListenAndServe(":8080", customMux)
+	err := http.ListenAndServe(":8080", customMux) // TODO: config for addr
 	if err != nil {
 		return
 	}
