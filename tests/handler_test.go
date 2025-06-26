@@ -24,7 +24,9 @@ func TestGetRedirect_Every10thRequestGoesToOrigin(t *testing.T) {
 	}(logger.Log)
 
 	cfg := config.Load()
-	h := handler.NewHandler(cfg.CDNHost)
+	cfg.Frequency = 10
+
+	h := handler.NewHandler(cfg)
 
 	originalURL := "http://s1.origin-cluster/video/123/file.m3u8"
 	cdnURL := "http://cdn.example.com/s1/video/123/file.m3u8"

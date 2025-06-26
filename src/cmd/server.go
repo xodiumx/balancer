@@ -49,7 +49,7 @@ func main() {
 	)
 
 	// Register handler
-	pb.RegisterVideoBalancerServer(s, handler.NewHandler(cfg.CDNHost))
+	pb.RegisterVideoBalancerServer(s, handler.NewHandler(cfg))
 
 	// Use local requests
 	if cfg.DEBUG {

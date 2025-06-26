@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"balancer/src/core/config"
 	"balancer/src/logger"
 	"context"
 	"fmt"
@@ -13,21 +14,20 @@ import (
 )
 
 type Handler struct {
-	CDNHost   string
-	frequency uint64
-	counter   uint64
+	counter uint64
+	cfg     *config.Config
 	pb.UnimplementedVideoBalancerServer
 }
 
-func NewHandler(cdnHost string) *Handler {
-	return &Handler{CDNHost: cdnHost, frequency: 10}
+func NewHandler(cfg *config.Config) *Handler {
+	return &Handler{cfg: cfg}
 }
 
 func (h *Handler) GetRedirect(_ context.Context, req *pb.VideoRequest) (*pb.VideoResponse, error) {
 	count := atomic.AddUint64(&h.counter, 1)
 	originalURL := req.GetVideo()
 
-	if count%h.frequency == 0 {
+	if count%h.cfg.Frequency == 0 {
 		logger.Log.Warn("Request data", // Warn for colored log
 			zap.String("Redirect url", originalURL),
 			zap.Uint64("request_number", count),
@@ -48,7 +48,9 @@ func (h *Handler) GetRedirect(_ context.Context, req *pb.VideoRequest) (*pb.Vide
 	originServer := parts[0] // e.g., s1
 	path := parsed.Path      // /video/123/xcg2djHckad.m3u8
 
-	cdnURL := fmt.Sprintf("http://%s/%s%s", h.CDNHost, originServer, path)
+	// if we need can if else for https
+	format := "http://%s/%s%s"
+	cdnURL := fmt.Sprintf(format, h.cfg.CDNHost, originServer, path)
 
 	logger.Log.Info("Request data",
 		zap.String("original URL", originalURL),

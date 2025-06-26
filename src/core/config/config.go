@@ -11,6 +11,7 @@ type Config struct {
 	DEBUG      bool
 	CDNHost    string
 	ServerBind string
+	Frequency  uint64
 }
 
 func Load() *Config {
@@ -24,8 +25,9 @@ func Load() *Config {
 		DEBUG:      viper.GetBool("debug"),
 		ServerBind: viper.GetString("server_bind"),
 		CDNHost:    viper.GetString("cdn_host"),
+		Frequency:  viper.GetUint64("frequency"),
 	}
 
-	log.Printf("[config] CDN_HOST=%s DEBUG=%v", cfg.CDNHost, cfg.DEBUG)
+	log.Printf("[config] CDN_HOST=%s DEBUG=%v FREQUENCY=%v", cfg.CDNHost, cfg.DEBUG, cfg.Frequency)
 	return cfg
 }
