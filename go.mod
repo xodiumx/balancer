@@ -3,6 +3,7 @@ module balancer
 go 1.23.10
 
 require (
+	github.com/goccy/go-json v0.10.5
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.1
 	github.com/spf13/viper v1.20.1

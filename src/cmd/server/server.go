@@ -6,7 +6,6 @@ import (
 	"go.uber.org/zap"
 	"log"
 	"net"
-	//"runtime"
 
 	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpczap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -22,7 +21,7 @@ func main() {
 	// Init cfg
 	cfg := config.Load()
 
-	// Init logger
+	//Init logger
 	if err := logger.InitLogger(); err != nil {
 		log.Fatalf("Init logger error: %v", err)
 	}

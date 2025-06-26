@@ -1,22 +1,41 @@
 package main
 
 import (
+	"balancer/src/core/logger"
 	pb "balancer/src/proto"
 	"context"
-	"encoding/json"
+	"github.com/goccy/go-json"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"io"
 	"log"
 	"net/http"
 	"time"
 )
 
+// TODO: refactor
 func main() {
 
-	// TODO: logs, config
+	// TODO: config
 
+	// Init logger
+	if err := logger.InitLogger(); err != nil {
+		log.Fatalf("Init logger error: %v", err)
+	}
+	defer func(Log *zap.Logger) {
+		err := Log.Sync()
+		if err != nil {
+
+		}
+	}(logger.Log)
+
+	// Ctx for client
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Client init
 	customMux := http.NewServeMux()
-
 	customMux.HandleFunc("/watch", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "only POST allowed", http.StatusMethodNotAllowed)
@@ -32,19 +51,25 @@ func main() {
 		defer func(Body io.ReadCloser) {
 			err := Body.Close()
 			if err != nil {
-				log.Printf("failed to close body: %v", err)
+				logger.Log.Error("failed to close body: %v", zap.Error(err))
 			}
 		}(r.Body)
 
 		// Parse JSON
 		var req pb.VideoRequest
 		if err := json.Unmarshal(body, &req); err != nil {
-			http.Error(w, "bad json", http.StatusBadRequest)
+			msg := "bad json format"
+			logger.Log.Error(msg, zap.Error(err))
+			http.Error(w, msg, http.StatusBadRequest)
 			return
 		}
 
 		// gRPC Client
-		conn, err := grpc.Dial("balancer:50051", grpc.WithInsecure()) // TODO: config for target url
+		conn, err := grpc.DialContext(
+			ctx,
+			"balancer:50051",
+			grpc.WithTransportCredentials(insecure.NewCredentials()), // grpc.WithTransportCredentials secure
+		) // TODO: config for target url
 		if err != nil {
 			http.Error(w, "grpc dial error", http.StatusInternalServerError)
 			return
@@ -71,7 +96,7 @@ func main() {
 	})
 
 	log.Println("🌐 Gateway started on :8080")
-	err := http.ListenAndServe(":8080", customMux) // TODO: config for addr
+	err := http.ListenAndServe(":8080", customMux) // TODO: config for addr, loggs middleware
 	if err != nil {
 		return
 	}
