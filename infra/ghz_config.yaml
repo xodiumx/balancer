@@ -1,0 +1,8 @@
+# NT
+proto: src/proto/balancer.proto
+call: balancer.VideoBalancer.GetRedirect
+insecure: true
+concurrency: 100
+total: 1000000
+data:
+  video: "http://s1.origin-cluster/video/123/xcg2djHckad.m3u8"

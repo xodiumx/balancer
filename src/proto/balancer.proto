@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package balancer;
+
+option go_package = "github.com/xodiumx/test_task_nmg/src/proto;balancer";
+
+service VideoBalancer {
+  rpc GetRedirect (VideoRequest) returns (VideoResponse);
+}
+
+message VideoRequest {
+  string video = 1;
+}
+
+message VideoResponse {
+  string redirect_url = 1;
+}
