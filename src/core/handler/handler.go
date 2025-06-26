@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"balancer/src/logger"
 	"context"
 	"fmt"
+	"go.uber.org/zap"
 	"net/url"
 	"strings"
 	"sync/atomic"
@@ -26,6 +28,10 @@ func (h *Handler) GetRedirect(_ context.Context, req *pb.VideoRequest) (*pb.Vide
 	originalURL := req.GetVideo()
 
 	if count%h.frequency == 0 {
+		logger.Log.Warn("Request data", // Warn for colored log
+			zap.String("Redirect url", originalURL),
+			zap.Uint64("request_number", count),
+		)
 		return &pb.VideoResponse{RedirectUrl: originalURL}, nil
 	}
 
@@ -43,5 +49,12 @@ func (h *Handler) GetRedirect(_ context.Context, req *pb.VideoRequest) (*pb.Vide
 	path := parsed.Path      // /video/123/xcg2djHckad.m3u8
 
 	cdnURL := fmt.Sprintf("http://%s/%s%s", h.CDNHost, originServer, path)
+
+	logger.Log.Info("Request data",
+		zap.String("original URL", originalURL),
+		zap.String("redirect URL", cdnURL),
+		zap.Uint64("request_number", count),
+	)
+
 	return &pb.VideoResponse{RedirectUrl: cdnURL}, nil
 }

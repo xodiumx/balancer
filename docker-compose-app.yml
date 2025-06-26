@@ -7,6 +7,6 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - "50051:50051"
-    environment:
-      - APP_CDN_HOST=cdn.example.com
+    env_file:
+      - "./.env"
     restart: unless-stopped

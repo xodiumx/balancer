@@ -1,10 +1,15 @@
 package main
 
 import (
+	"balancer/src/core/config"
+	"balancer/src/logger"
+	"go.uber.org/zap"
 	"log"
 	"net"
 
-	"balancer/src/core/config"
+	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpczap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+
 	"balancer/src/core/handler"
 	pb "balancer/src/proto"
 	"google.golang.org/grpc"
@@ -12,19 +17,46 @@ import (
 )
 
 func main() {
+
+	// Init cfg
 	cfg := config.Load()
+
+	// Init logger
+	if err := logger.InitLogger(); err != nil {
+		log.Fatalf("Init logger error: %v", err)
+	}
+	defer func(Log *zap.Logger) {
+		err := Log.Sync()
+		if err != nil {
+
+		}
+	}(logger.Log)
 
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		logger.Log.Fatal("failed to listen", zap.Error(err))
 	}
 
-	s := grpc.NewServer()
-	pb.RegisterVideoBalancerServer(s, handler.NewHandler(cfg.CDNHost))
-	reflection.Register(s) // TODO if debug
+	// Init Server
+	zapLogger := logger.Log.WithOptions(zap.AddCaller())
 
-	log.Println("Balancer service started on :50051")
+	s := grpc.NewServer(
+		grpc.UnaryInterceptor(
+			grpcmiddleware.ChainUnaryServer(
+				grpczap.UnaryServerInterceptor(zapLogger),
+			),
+		),
+	)
+
+	// Register handler
+	pb.RegisterVideoBalancerServer(s, handler.NewHandler(cfg.CDNHost))
+
+	// TODO debug
+	reflection.Register(s)
+
+	logger.Log.Info("🚀 gRPC server started", zap.String("addr", ":50051"))
+
 	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+		logger.Log.Fatal("failed to serve", zap.Error(err))
 	}
 }

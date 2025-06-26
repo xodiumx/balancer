@@ -5,6 +5,6 @@ app:
 
 .PHONY: nt
 nt:
-	ghz --config ./infa/ghz_config.yaml localhost:50051
+	ghz --config ./dev/ghz_config.yaml localhost:50051
 
 
