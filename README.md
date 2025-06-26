@@ -1,1 +1,125 @@
-# test_task_nmg
+# URL Balancer
+
+## Description
+
+-
+
+## Install
+
+- Clone repository
+
+- Help command
+
+```shell
+make help
+```
+
+- Run app in docker
+
+```shell
+make app
+```
+
+- Start logs:
+
+```Text
+2025-06-26 18:28:39 balancer-1  | 2025/06/26 15:28:39 [config] CDN_HOST=cdn.host.original.lol.322 DEBUG=true FREQUENCY=10
+2025-06-26 18:28:39 balancer-1  | 2025-06-26T15:28:39.588Z      INFO    cmd/server.go:59        🚀 gRPC server started       {"addr": ":50051"}
+```
+
+## Use cases
+
+### First
+
+- For test balancer u can use [grpcurl](https://github.com/fullstorydev/grpcurl) for make requests on app
+
+```shell
+grpcurl -plaintext -d '{"video":"http://s2.origin-cluster/video/123/xcg2djHckad.m3u8"}' \
+  localhost:50051 balancer.VideoBalancer/GetRedirect
+```
+
+- Output:
+
+```text
+{
+  "redirectUrl": "http://cdn.host.original.lol.322/s2/video/123/xcg2djHckad.m3u8"
+}
+```
+
+- Every 10 requests redirect to the original url:
+
+```shell
+grpcurl -plaintext -d '{"video":"http://s2.origin-cluster/video/123/xcg2djHckad.m3u8"}' \
+  localhost:50051 balancer.VideoBalancer/GetRedirect
+```
+
+- Output:
+
+```text
+{
+  "redirectUrl": "http://s2.origin-cluster/video/123/xcg2djHckad.m3u8"
+}
+```
+
+### Second
+
+- [ghz](https://github.com/bojand/ghz) is used for load testing.
+
+- Run command:
+
+```shell
+make nt
+```
+
+- Metrics mac m1
+
+```text
+Summary:
+  Count:        1000000
+  Total:        56.37 s
+  Slowest:      82.79 ms
+  Fastest:      0.62 ms
+  Average:      5.16 ms
+  Requests/sec: 17738.45
+
+Response time histogram:
+  0.622  [1]      |
+  8.839  [943533] |∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎
+  17.056 [49309]  |∎∎
+  25.273 [3572]   |
+  33.490 [1600]   |
+  41.708 [814]    |
+  49.925 [412]    |
+  58.142 [352]    |
+  66.359 [302]    |
+  74.576 [94]     |
+  82.793 [11]     |
+
+Latency distribution:
+  10 % in 2.86 ms
+  25 % in 3.54 ms
+  50 % in 4.56 ms
+  75 % in 6.05 ms
+  90 % in 7.77 ms
+  95 % in 9.08 ms
+  99 % in 14.01 ms
+
+Status code distribution:
+  [OK]   1000000 responses
+```
+
+- Logs
+
+```text
+...
+2025-06-26 18:36:12 balancer-1  | 2025-06-26T15:36:12.712Z      INFO    handler/handler.go:55   Request data{"original URL": "http://s1.origin-cluster/video/123/xcg2djHckad.m3u8", "redirect URL": "http://cdn.host.original.lol.322/s1/video/123/xcg2djHckad.m3u8", "request_number": 1000006}
+2025-06-26 18:36:12 balancer-1  | 2025-06-26T15:36:12.712Z      INFO    zap/options.go:212      finished unary call with code OK    {"grpc.start_time": "2025-06-26T15:36:12Z", "grpc.request.deadline": "2025-06-26T15:36:32Z", "system": "grpc", "span.kind": "server", "grpc.service": "balancer.VideoBalancer", "grpc.method": "GetRedirect", "grpc.code": "OK", "grpc.time_ms": 0.005}
+2025-06-26 18:36:12 balancer-1  | 2025-06-26T15:36:12.712Z      INFO    handler/handler.go:55   Request data{"original URL": "http://s1.origin-cluster/video/123/xcg2djHckad.m3u8", "redirect URL": "http://cdn.host.original.lol.322/s1/video/123/xcg2djHckad.m3u8", "request_number": 1000007}
+2025-06-26 18:36:12 balancer-1  | 2025-06-26T15:36:12.712Z      INFO    zap/options.go:212      finished unary call with code OK    {"grpc.start_time": "2025-06-26T15:36:12Z", "grpc.request.deadline": "2025-06-26T15:36:32Z", "system": "grpc", "span.kind": "server", "grpc.service": "balancer.VideoBalancer", "grpc.method": "GetRedirect", "grpc.code": "OK", "grpc.time_ms": 0.006}
+2025-06-26 18:36:12 balancer-1  | 2025-06-26T15:36:12.712Z      INFO    handler/handler.go:55   Request data{"original URL": "http://s1.origin-cluster/video/123/xcg2djHckad.m3u8", "redirect URL": "http://cdn.host.original.lol.322/s1/video/123/xcg2djHckad.m3u8", "request_number": 1000008}
+2025-06-26 18:36:12 balancer-1  | 2025-06-26T15:36:12.712Z      INFO    zap/options.go:212      finished unary call with code OK    {"grpc.start_time": "2025-06-26T15:36:12Z", "grpc.request.deadline": "2025-06-26T15:36:32Z", "system": "grpc", "span.kind": "server", "grpc.service": "balancer.VideoBalancer", "grpc.method": "GetRedirect", "grpc.code": "OK", "grpc.time_ms": 0.005}
+2025-06-26 18:36:12 balancer-1  | 2025-06-26T15:36:12.712Z      INFO    handler/handler.go:55   Request data{"original URL": "http://s1.origin-cluster/video/123/xcg2djHckad.m3u8", "redirect URL": "http://cdn.host.original.lol.322/s1/video/123/xcg2djHckad.m3u8", "request_number": 1000009}
+2025-06-26 18:36:12 balancer-1  | 2025-06-26T15:36:12.712Z      INFO    zap/options.go:212      finished unary call with code OK    {"grpc.start_time": "2025-06-26T15:36:12Z", "grpc.request.deadline": "2025-06-26T15:36:32Z", "system": "grpc", "span.kind": "server", "grpc.service": "balancer.VideoBalancer", "grpc.method": "GetRedirect", "grpc.code": "OK", "grpc.time_ms": 0.018}
+2025-06-26 18:36:12 balancer-1  | 2025-06-26T15:36:12.712Z      WARN    handler/handler.go:31   Request data{"Redirect url": "http://s1.origin-cluster/video/123/xcg2djHckad.m3u8", "request_number": 1000010}
+2025-06-26 18:36:12 balancer-1  | 2025-06-26T15:36:12.712Z      INFO    zap/options.go:212      finished unary call with code OK    {"grpc.start_time": "2025-06-26T15:36:12Z", "grpc.request.deadline": "2025-06-26T15:36:32Z", "system": "grpc", "span.kind": "server", "grpc.service": "balancer.VideoBalancer", "grpc.method": "GetRedirect", "grpc.code": "OK", "grpc.time_ms": 0.027}
+```
