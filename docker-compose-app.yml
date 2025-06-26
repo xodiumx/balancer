@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  balancer:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "50051:50051"
+    environment:
+      - APP_CDN_HOST=cdn.example.com
+    restart: unless-stopped
