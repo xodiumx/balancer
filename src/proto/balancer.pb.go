@@ -2,11 +2,12 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v5.29.3
-// source: balancer.proto
+// source: src/proto/balancer.proto
 
 package proto
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -30,7 +31,7 @@ type VideoRequest struct {
 
 func (x *VideoRequest) Reset() {
 	*x = VideoRequest{}
-	mi := &file_balancer_proto_msgTypes[0]
+	mi := &file_src_proto_balancer_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -42,7 +43,7 @@ func (x *VideoRequest) String() string {
 func (*VideoRequest) ProtoMessage() {}
 
 func (x *VideoRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_balancer_proto_msgTypes[0]
+	mi := &file_src_proto_balancer_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -55,7 +56,7 @@ func (x *VideoRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VideoRequest.ProtoReflect.Descriptor instead.
 func (*VideoRequest) Descriptor() ([]byte, []int) {
-	return file_balancer_proto_rawDescGZIP(), []int{0}
+	return file_src_proto_balancer_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *VideoRequest) GetVideo() string {
@@ -74,7 +75,7 @@ type VideoResponse struct {
 
 func (x *VideoResponse) Reset() {
 	*x = VideoResponse{}
-	mi := &file_balancer_proto_msgTypes[1]
+	mi := &file_src_proto_balancer_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -86,7 +87,7 @@ func (x *VideoResponse) String() string {
 func (*VideoResponse) ProtoMessage() {}
 
 func (x *VideoResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_balancer_proto_msgTypes[1]
+	mi := &file_src_proto_balancer_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -99,7 +100,7 @@ func (x *VideoResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VideoResponse.ProtoReflect.Descriptor instead.
 func (*VideoResponse) Descriptor() ([]byte, []int) {
-	return file_balancer_proto_rawDescGZIP(), []int{1}
+	return file_src_proto_balancer_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *VideoResponse) GetRedirectUrl() string {
@@ -109,36 +110,36 @@ func (x *VideoResponse) GetRedirectUrl() string {
 	return ""
 }
 
-var File_balancer_proto protoreflect.FileDescriptor
+var File_src_proto_balancer_proto protoreflect.FileDescriptor
 
-const file_balancer_proto_rawDesc = "" +
+const file_src_proto_balancer_proto_rawDesc = "" +
 	"\n" +
-	"\x0ebalancer.proto\x12\bbalancer\"$\n" +
+	"\x18src/proto/balancer.proto\x12\bbalancer\x1a\x1cgoogle/api/annotations.proto\"$\n" +
 	"\fVideoRequest\x12\x14\n" +
 	"\x05video\x18\x01 \x01(\tR\x05video\"2\n" +
 	"\rVideoResponse\x12!\n" +
-	"\fredirect_url\x18\x01 \x01(\tR\vredirectUrl2O\n" +
-	"\rVideoBalancer\x12>\n" +
-	"\vGetRedirect\x12\x16.balancer.VideoRequest\x1a\x17.balancer.VideoResponseB5Z3github.com/xodiumx/test_task_nmg/src/proto;balancerb\x06proto3"
+	"\fredirect_url\x18\x01 \x01(\tR\vredirectUrl2b\n" +
+	"\rVideoBalancer\x12Q\n" +
+	"\vGetRedirect\x12\x16.balancer.VideoRequest\x1a\x17.balancer.VideoResponse\"\x11\x82\xd3\xe4\x93\x02\v:\x01*\"\x06/watchB5Z3github.com/xodiumx/test_task_nmg/src/proto;balancerb\x06proto3"
 
 var (
-	file_balancer_proto_rawDescOnce sync.Once
-	file_balancer_proto_rawDescData []byte
+	file_src_proto_balancer_proto_rawDescOnce sync.Once
+	file_src_proto_balancer_proto_rawDescData []byte
 )
 
-func file_balancer_proto_rawDescGZIP() []byte {
-	file_balancer_proto_rawDescOnce.Do(func() {
-		file_balancer_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_balancer_proto_rawDesc), len(file_balancer_proto_rawDesc)))
+func file_src_proto_balancer_proto_rawDescGZIP() []byte {
+	file_src_proto_balancer_proto_rawDescOnce.Do(func() {
+		file_src_proto_balancer_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_src_proto_balancer_proto_rawDesc), len(file_src_proto_balancer_proto_rawDesc)))
 	})
-	return file_balancer_proto_rawDescData
+	return file_src_proto_balancer_proto_rawDescData
 }
 
-var file_balancer_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_balancer_proto_goTypes = []any{
+var file_src_proto_balancer_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_src_proto_balancer_proto_goTypes = []any{
 	(*VideoRequest)(nil),  // 0: balancer.VideoRequest
 	(*VideoResponse)(nil), // 1: balancer.VideoResponse
 }
-var file_balancer_proto_depIdxs = []int32{
+var file_src_proto_balancer_proto_depIdxs = []int32{
 	0, // 0: balancer.VideoBalancer.GetRedirect:input_type -> balancer.VideoRequest
 	1, // 1: balancer.VideoBalancer.GetRedirect:output_type -> balancer.VideoResponse
 	1, // [1:2] is the sub-list for method output_type
@@ -148,26 +149,26 @@ var file_balancer_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_balancer_proto_init() }
-func file_balancer_proto_init() {
-	if File_balancer_proto != nil {
+func init() { file_src_proto_balancer_proto_init() }
+func file_src_proto_balancer_proto_init() {
+	if File_src_proto_balancer_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_balancer_proto_rawDesc), len(file_balancer_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_src_proto_balancer_proto_rawDesc), len(file_src_proto_balancer_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_balancer_proto_goTypes,
-		DependencyIndexes: file_balancer_proto_depIdxs,
-		MessageInfos:      file_balancer_proto_msgTypes,
+		GoTypes:           file_src_proto_balancer_proto_goTypes,
+		DependencyIndexes: file_src_proto_balancer_proto_depIdxs,
+		MessageInfos:      file_src_proto_balancer_proto_msgTypes,
 	}.Build()
-	File_balancer_proto = out.File
-	file_balancer_proto_goTypes = nil
-	file_balancer_proto_depIdxs = nil
+	File_src_proto_balancer_proto = out.File
+	file_src_proto_balancer_proto_goTypes = nil
+	file_src_proto_balancer_proto_depIdxs = nil
 }

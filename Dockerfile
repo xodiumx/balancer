@@ -9,9 +9,7 @@ RUN go mod download
 
 COPY . .
 
-RUN ls -la .
-
-RUN go build -o balancer ./src/cmd
+RUN go build -o balancer ./src/cmd/server
 
 
 # Используем минимальный образ для финального контейнера

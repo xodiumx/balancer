@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: balancer.proto
+// source: src/proto/balancer.proto
 
 package proto
 
@@ -117,5 +117,5 @@ var VideoBalancer_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "balancer.proto",
+	Metadata: "src/proto/balancer.proto",
 }

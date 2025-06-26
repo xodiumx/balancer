@@ -6,3 +6,6 @@ concurrency: 100
 total: 1000000
 data:
   video: "http://s1.origin-cluster/video/123/xcg2djHckad.m3u8"
+protoImportPaths:
+  - src/proto
+  - src/proto/googleapis

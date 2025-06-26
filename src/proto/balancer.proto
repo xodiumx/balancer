@@ -4,8 +4,15 @@ package balancer;
 
 option go_package = "github.com/xodiumx/test_task_nmg/src/proto;balancer";
 
+import "google/api/annotations.proto";
+
 service VideoBalancer {
-  rpc GetRedirect (VideoRequest) returns (VideoResponse);
+  rpc GetRedirect (VideoRequest) returns (VideoResponse) {
+    option (google.api.http) = {
+      post: "/watch"
+      body: "*"
+    };
+  }
 }
 
 message VideoRequest {

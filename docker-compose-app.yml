@@ -10,3 +10,16 @@ services:
     env_file:
       - "./.env"
     restart: unless-stopped
+
+  gateway:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.gateway
+    container_name: gateway
+    depends_on:
+      - balancer
+    ports:
+      - "8080:8080"
+    env_file:
+      - "./.env"
+    restart: unless-stopped
