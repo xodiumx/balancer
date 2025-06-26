@@ -57,24 +57,6 @@ func main() {
 		reflection.Register(s)
 	}
 
-	// gRPC Gateway HTTP server
-	//go func() {
-	//	ctx := context.Background()
-	//	mux := runtime.NewServeMux()
-	//
-	//	opts := []grpc.DialOption{grpc.WithInsecure()} // WithTransportCredentials prod
-	//
-	//	err := pb.RegisterVideoBalancerHandlerFromEndpoint(ctx, mux, cfg.ServerBind, opts)
-	//	if err != nil {
-	//		logger.Log.Fatal("failed to start grpc-gateway", zap.Error(err))
-	//	}
-	//
-	//	logger.Log.Info("🌐 gRPC-Gateway started", zap.String("addr", ":8080"))
-	//	if err := http.ListenAndServe(":8080", mux); err != nil {
-	//		logger.Log.Fatal("http gateway error", zap.Error(err))
-	//	}
-	//}()
-
 	logger.Log.Info("🚀 gRPC server started", zap.String("addr", ":50051"))
 
 	if err := s.Serve(lis); err != nil {
