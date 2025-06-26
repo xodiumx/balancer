@@ -43,8 +43,8 @@ func newHandlerFixture() *handlerFixture {
 		Handler:           handler.NewHandler(cfg),
 		firstOriginalURL:  "http://s1.origin-cluster/video/123/file.m3u8",
 		secondOriginalURL: "http://s2.origin-cluster/video/123/file.m3u8",
-		firstCDNURL:       "http://cdn.example.com/s1/video/123/file.m3u8",
-		secondCDNURL:      "http://cdn.example.com/s2/video/123/file.m3u8",
+		firstCDNURL:       "http://cdn.default.com/s1/video/123/file.m3u8",
+		secondCDNURL:      "http://cdn.default.com/s2/video/123/file.m3u8",
 	}
 }
 

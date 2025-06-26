@@ -1,10 +1,8 @@
 package config
 
 import (
-	"log"
-	"strings"
-
 	"github.com/spf13/viper"
+	"log"
 )
 
 type Config struct {
@@ -16,10 +14,8 @@ type Config struct {
 
 func Load() *Config {
 
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
-
-	viper.SetDefault("cdn_host", "cdn.example.com")
+	viper.SetDefault("cdn_host", "cdn.default.com")
 
 	cfg := &Config{
 		DEBUG:      viper.GetBool("debug"),
@@ -28,6 +24,9 @@ func Load() *Config {
 		Frequency:  viper.GetUint64("frequency"),
 	}
 
-	log.Printf("[config] CDN_HOST=%s DEBUG=%v FREQUENCY=%v", cfg.CDNHost, cfg.DEBUG, cfg.Frequency)
+	log.Printf(
+		"[config] DEBUG=%v SERVER_BINF=%s CDN_HOST=%s FREQUENCY=%v",
+		cfg.DEBUG, cfg.ServerBind, cfg.CDNHost, cfg.Frequency,
+	)
 	return cfg
 }
