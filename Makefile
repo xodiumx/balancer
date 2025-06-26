@@ -1,5 +1,6 @@
 .PHONY: help
 help:
+	@echo "WARN - create .env file in ./dev/docker directory"
 	@echo "Available commands:"
 	@echo "	make app - Run app in docker"
 	@echo "	make nt  - Load testing via ghz"

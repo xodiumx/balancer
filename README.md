@@ -14,6 +14,8 @@
 make help
 ```
 
+- create `.env` file in `./dev/docker`
+
 - Run app in docker
 
 ```shell
@@ -21,7 +23,6 @@ make app
 ```
 
 - Start logs:
--
 
 ```Text
 2025-06-26 18:28:39 balancer-1  | 2025/06/26 15:28:39 [config] CDN_HOST=cdn.host.original.lol.322 DEBUG=true FREQUENCY=10
