@@ -10,7 +10,7 @@ var Log *zap.Logger
 func InitLogger() error {
 	cfg := zap.Config{
 		Level:            zap.NewAtomicLevelAt(zap.InfoLevel),
-		Encoding:         "console", // <--- console вместо json
+		Encoding:         "console", // <--- console instead json
 		OutputPaths:      []string{"stdout"},
 		ErrorOutputPaths: []string{"stderr"},
 		EncoderConfig: zapcore.EncoderConfig{

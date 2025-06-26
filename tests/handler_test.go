@@ -4,8 +4,9 @@ import (
 	"balancer/src/core/config"
 	"balancer/src/core/logger"
 	"context"
-	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
+	"log"
+	"os"
 	"testing"
 
 	"balancer/src/core/handler"
@@ -13,37 +14,89 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetRedirect_Every10thRequestGoesToOrigin(t *testing.T) {
-
-	err := logger.InitLogger()
-	require.NoError(t, err)
+func TestMain(m *testing.M) {
+	if err := logger.InitLogger(); err != nil {
+		log.Fatalf("failed to init logger: %v", err)
+	}
 	defer func(Log *zap.Logger) {
 		err := Log.Sync()
 		if err != nil {
+			log.Fatalf("failed to sync logger: %v", err)
 		}
 	}(logger.Log)
 
+	os.Exit(m.Run())
+}
+
+type handlerFixture struct {
+	Handler           *handler.Handler
+	firstOriginalURL  string
+	secondOriginalURL string
+	firstCDNURL       string
+	secondCDNURL      string
+}
+
+func newHandlerFixture() *handlerFixture {
 	cfg := config.Load()
 	cfg.Frequency = 10
+	return &handlerFixture{
+		Handler:           handler.NewHandler(cfg),
+		firstOriginalURL:  "http://s1.origin-cluster/video/123/file.m3u8",
+		secondOriginalURL: "http://s2.origin-cluster/video/123/file.m3u8",
+		firstCDNURL:       "http://cdn.example.com/s1/video/123/file.m3u8",
+		secondCDNURL:      "http://cdn.example.com/s2/video/123/file.m3u8",
+	}
+}
 
-	h := handler.NewHandler(cfg)
+func TestGetRedirect_Every10thRequestGoesToOrigin(t *testing.T) {
 
-	originalURL := "http://s1.origin-cluster/video/123/file.m3u8"
-	cdnURL := "http://cdn.example.com/s1/video/123/file.m3u8"
+	h := newHandlerFixture()
 
-	// отправим 9 "CDN"-запросов
+	// send 9 "CDN"-request
 	for i := 0; i < 9; i++ {
-		resp, err := h.GetRedirect(context.Background(), &proto.VideoRequest{
-			Video: originalURL,
+		resp, err := h.Handler.GetRedirect(context.Background(), &proto.VideoRequest{
+			Video: h.firstOriginalURL,
 		})
 		assert.NoError(t, err)
-		assert.Equal(t, cdnURL, resp.RedirectUrl)
+		assert.Equal(t, h.firstCDNURL, resp.RedirectUrl)
 	}
 
-	// 10-й должен идти на origin
-	resp, err := h.GetRedirect(context.Background(), &proto.VideoRequest{
-		Video: originalURL,
+	// 10 must redirect on origin
+	resp, err := h.Handler.GetRedirect(context.Background(), &proto.VideoRequest{
+		Video: h.firstOriginalURL,
 	})
 	assert.NoError(t, err)
-	assert.Equal(t, originalURL, resp.RedirectUrl)
+	assert.Equal(t, h.firstOriginalURL, resp.RedirectUrl)
+}
+
+func TestGetRedirect_SubDomainCached(t *testing.T) {
+
+	h := newHandlerFixture()
+
+	// send 9 "CDN"-request
+	for i := 0; i < 9; i++ {
+		resp, err := h.Handler.GetRedirect(context.Background(), &proto.VideoRequest{
+			Video: h.firstOriginalURL,
+		})
+		assert.NoError(t, err)
+		assert.Equal(t, h.firstCDNURL, resp.RedirectUrl)
+	}
+
+	// 10 A request with a different domain should not return the original url
+	{
+		resp, err := h.Handler.GetRedirect(context.Background(), &proto.VideoRequest{
+			Video: h.secondOriginalURL,
+		})
+		assert.NoError(t, err)
+		assert.Equal(t, h.secondCDNURL, resp.RedirectUrl)
+	}
+
+	// 11 The request with the first domain should return the original URL
+	{
+		resp, err := h.Handler.GetRedirect(context.Background(), &proto.VideoRequest{
+			Video: h.firstOriginalURL,
+		})
+		assert.NoError(t, err)
+		assert.Equal(t, h.firstOriginalURL, resp.RedirectUrl)
+	}
 }
