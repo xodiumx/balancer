@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"os"
 	"testing"
 
 	"balancer/src/core/config"
@@ -9,11 +8,9 @@ import (
 )
 
 func TestLoadConfig_Default(t *testing.T) {
-	err := os.Unsetenv("CDN_HOST")
-	if err != nil {
-		return
-	}
-
 	cfg := config.Load()
 	assert.Equal(t, "cdn.example.com", cfg.CDNHost)
+	assert.Equal(t, uint64(0), cfg.Frequency)
+	assert.Equal(t, "", cfg.ServerBind)
+	assert.Equal(t, false, cfg.DEBUG)
 }
