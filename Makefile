@@ -8,3 +8,6 @@ nt:
 	ghz --config ./dev/ghz_config.yaml localhost:50051
 
 
+.PHONY: test
+test:
+	go test ./tests -v
