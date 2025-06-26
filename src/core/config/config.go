@@ -25,7 +25,7 @@ func Load() *Config {
 	}
 
 	log.Printf(
-		"[config] DEBUG=%v SERVER_BINF=%s CDN_HOST=%s FREQUENCY=%v",
+		"[config] DEBUG=%v SERVER_BIND=%s CDN_HOST=%s FREQUENCY=%v",
 		cfg.DEBUG, cfg.ServerBind, cfg.CDNHost, cfg.Frequency,
 	)
 	return cfg
