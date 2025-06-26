@@ -2,7 +2,7 @@ package tests
 
 import (
 	"balancer/src/core/config"
-	"balancer/src/logger"
+	"balancer/src/core/logger"
 	"context"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"

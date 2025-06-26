@@ -2,7 +2,7 @@ package main
 
 import (
 	"balancer/src/core/config"
-	"balancer/src/logger"
+	"balancer/src/core/logger"
 	"go.uber.org/zap"
 	"log"
 	"net"

@@ -2,7 +2,7 @@ package handler
 
 import (
 	"balancer/src/core/config"
-	"balancer/src/logger"
+	"balancer/src/core/logger"
 	"context"
 	"fmt"
 	"go.uber.org/zap"
