@@ -124,3 +124,38 @@ Status code distribution:
 2025-06-26 18:36:12 balancer-1  | 2025-06-26T15:36:12.712Z      WARN    handler/handler.go:31   Request data{"Redirect url": "http://s1.origin-cluster/video/123/xcg2djHckad.m3u8", "request_number": 1000010}
 2025-06-26 18:36:12 balancer-1  | 2025-06-26T15:36:12.712Z      INFO    zap/options.go:212      finished unary call with code OK    {"grpc.start_time": "2025-06-26T15:36:12Z", "grpc.request.deadline": "2025-06-26T15:36:32Z", "system": "grpc", "span.kind": "server", "grpc.service": "balancer.VideoBalancer", "grpc.method": "GetRedirect", "grpc.code": "OK", "grpc.time_ms": 0.027}
 ```
+
+### Third
+
+- Test redirect via gateway, run:
+
+```shell
+curl -X POST http://localhost:8080/watch -v \
+  -H "Content-Type: application/json" \
+  -d '{"video": "http://s1.origin-cluster/video/123/vid.m3u8"}'
+```
+
+- Output:
+
+```text
+Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:8080 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:8080...
+* Connected to localhost (::1) port 8080
+> POST /watch HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/8.7.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 56
+>
+* upload completely sent off: 56 bytes
+< HTTP/1.1 302 Found
+< Location: http://cdn.host.original.lol.322/s1/video/123/vid.m3u8
+< Date: Thu, 26 Jun 2025 17:09:37 GMT
+< Content-Length: 0
+<
+* Connection #0 to host localhost left intact
+```
