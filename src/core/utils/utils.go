@@ -46,7 +46,7 @@ type CounterMap struct {
 	counters sync.Map
 }
 
-func (c *CounterMap) IncrementAndGet(node string) uint64 {
-	val, _ := c.counters.LoadOrStore(node, new(uint64))
+func (c *CounterMap) IncrementAndGet(key string) uint64 {
+	val, _ := c.counters.LoadOrStore(key, new(uint64))
 	return atomic.AddUint64(val.(*uint64), 1)
 }
